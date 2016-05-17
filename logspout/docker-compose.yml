@@ -1,0 +1,7 @@
+logspout:
+  image: moravianlibrary/logspout:latest
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  command: syslog://<logstash-url>:5000
+  restart: always
+

@@ -1,0 +1,25 @@
+oaiprovider:
+  build: .
+  environment:
+    - FEDORA_URL=http://fcrepo:8080/fedora
+    - FEDORA_USER=fedoraAdmin
+    - FEDORA_PASS=fedoraAdmin
+    - FEDORA_JDBC_URL=jdbc:postgresql://riTriplesPostgres/riTriples
+    - FEDORA_JDBC_USER=fedoraAdmin
+    - FEDORA_JDBC_PASS=fedoraAdmin
+  ports:
+    - "8080"
+  links:
+    - oaiproviderPostgres:oaiproviderPostgres
+  external_links:
+    - 362_fcrepo_1:fcrepo
+    - 362_riTriplesPostgres_1:riTriplesPostgres
+oaiproviderPostgres:
+  image: "postgres:9.3"
+  volumes:
+    - /data/oai:/var/lib/postgresql/data
+  environment:
+    - POSTGRES_USER=proai
+    - POSTGRES_PASSWORD=proai
+  ports:
+    - "5483"

@@ -1,0 +1,13 @@
+kramerius:
+  image: moravianlibrary/kramerius
+  volumes:
+    - /data/kramerius/foxml-import:/data/foxml-import
+    - /data/kramerius/.kramerius4:/root/.kramerius4
+  ports:
+    - "80:8080"
+  external_links:
+    - dev_krameriusPostgres_1:krameriusPostgres
+    - dev_riTriplesPostgres_1:riTriplesPostgres
+    - dev_fcrepo_1:fcrepo
+    - dev_solr_1:solr
+

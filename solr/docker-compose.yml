@@ -1,0 +1,4 @@
+solr:
+  build: .
+  ports:
+    - "8080"

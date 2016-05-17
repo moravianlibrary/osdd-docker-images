@@ -1,0 +1,77 @@
+elasticsearch:
+  image: elasticsearch:latest
+  volumes:
+    - <data-location>:/usr/share/elasticsearch/data
+  command: elasticsearch -Des.network.host=0.0.0.0
+  environment:
+    - "TZ=Europe/Prague"
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart:
+    always
+
+logstash:
+  image: logstash:latest
+  volumes:
+    - ./logstash-config:/config-dir
+  command: logstash -f /config-dir/logstash.conf
+  ports:
+    - "5000:5000"
+    - "5000:5000/udp"
+  links:
+    - elasticsearch:elasticsearch
+  environment:
+    - "LOGSPOUT=ignore"
+    - "TZ=Europe/Prague"
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart:
+    always
+
+kibana:
+  image: kibana:latest
+  links:
+    - elasticsearch:elasticsearch
+  ports:
+    - "5601:5601"
+  environment:
+    - "TZ=Europe/Prague"
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart:
+    always
+
+logspout:
+  image: moravianlibrary/logspout:latest
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  links:
+    - logstash:logstash
+  command: syslog://logstash:5000
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart: always
+
+curator:
+  image: moravianlibrary/curator:latest
+  volumes:
+    - ./curator/crontab:/etc/cron.d/curator
+  environment:
+    - "TZ=Europe/Prague"
+  links:
+    - elasticsearch:elasticsearch
+  command: bash -c "cron && touch /var/log/curator_cron.log && tail -f /var/log/curator_cron.log"
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart:
+    always

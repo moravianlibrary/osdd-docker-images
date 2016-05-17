@@ -1,0 +1,28 @@
+nginx:
+  build: ./nginx
+  links:
+    - imageserver:imageserver
+  environment:
+    - "TZ=Europe/Prague"
+  ports:
+    - "80:80"
+  restart:
+    always
+
+memcached:
+  image: memcached:latest
+  environment:
+    - "TZ=Europe/Prague"
+  restart:
+    always
+
+imageserver:
+  build: ./imageserver
+  volumes:
+    - /data/imageserver:/data
+  links:
+    - memcached:memcached
+  environment:
+    - "TZ=Europe/Prague"
+  restart:
+    always

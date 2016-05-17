@@ -1,0 +1,15 @@
+<processes>
+  <process>
+    <id>parametrizedimport</id>
+    <description>Import FOXML</description>
+    <mainClass>org.kramerius.imports.ParametrizedImport</mainClass>
+    <standardOs>lrOut</standardOs>
+    <errOs>lrErr</errOs>
+    <templates>
+      <input class="org.kramerius.imports.input.ParametrizedImportInputTemplate"></input>
+    </templates>
+    <!--javaProcessParameters>-Xmx1024m -Xms512m -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</javaProcessParameters-->
+        <securedaction>import</securedaction>
+    </process>
+</processes>
+

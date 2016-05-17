@@ -1,0 +1,14 @@
+audioserver:
+  build: .
+  volumes:
+    - /data/audioserver:/data
+  environment:
+    - "TZ=Europe/Prague"
+  ports:
+    - "80:80"
+  log_driver: "json-file"
+  log_opt:
+    max-size: "100m"
+    max-file: "1"
+  restart:
+    always
