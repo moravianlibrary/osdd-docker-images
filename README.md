@@ -21,6 +21,8 @@ Tyto kontejnery je nutné za pomocí nástroje docker-compose spojit.
 
 vytvoříme soubor [docker-compose.yml](https://github.com/moravianlibrary/kramerius-docker/blob/master/docker-compose.yml)
 
+Komponenty `fcrepo` a `solr` potřebují k běhu (alespoň minimální) data. Složky s daty se připojují v `docker-compose.yml` pod klíčem `volumes`.
+
 *v případě, že chcete v Dockeru provozovat pouze imageserver použijte  [docker-compose.yml](https://github.com/moravianlibrary/kramerius-docker/blob/master/imageserver/docker-compose.yml)*
 
 poté příkazem `docker-compose up -d`  pustíme.
