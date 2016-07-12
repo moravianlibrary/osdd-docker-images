@@ -7,7 +7,7 @@ ENV JDBC_DRIVER_DOWNLOAD_URL http://jdbc.postgresql.org/download/postgresql-9.3-
 
 ## install packages
 RUN apt-get -y  update && \
-apt-get -y install wget unzip xmlstarlet curl less htop
+apt-get -y install wget unzip xmlstarlet curl less htop vim mc
 
 
 RUN cd /tmp && \
@@ -20,6 +20,7 @@ RUN curl -sL "$JDBC_DRIVER_DOWNLOAD_URL" -o $CATALINA_HOME/lib/postgresql-9.3-11
 ADD search.xml $CATALINA_HOME/conf/Catalina/localhost/search.xml
 ADD rightseditor.xml $CATALINA_HOME/conf/Catalina/localhost/rightseditor.xml
 ADD editor.xml $CATALINA_HOME/conf/Catalina/localhost/editor.xml
+ADD web.xml $CATALINA_HOME/conf/web.xml
 
 # JAAS
 ENV JAAS_CONFIG $CATALINA_HOME/conf/jaas.config
