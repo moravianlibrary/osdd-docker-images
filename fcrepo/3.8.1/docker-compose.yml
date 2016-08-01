@@ -4,6 +4,12 @@ fcrepo:
   #  - /data/fcrepo:/usr/local/fedora/data
   environment:
     - FEDORA_PASSWORD=fedoraAdmin
+    - FEDORA_DB_HOST=fedoraPostgres
+    - FEDORA_DB_USER=fedoraAdmin
+    - FEDORA_DB_PASSWORD=fedoraAdmin
+    - RITRIPLES_DB_HOST=riTriplesPostgres
+    - RITRIPLES_DB_USER=fedoraAdmin
+    - RITRIPLES_DB_PASSWORD=fedoraAdmin
   ports:
     - "8080:8080"
   links:

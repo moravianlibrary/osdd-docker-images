@@ -54,6 +54,6 @@ USER $TOMCAT_USER
 
 EXPOSE 8080
 ADD docker-entrypoint.sh /
-#ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
 
