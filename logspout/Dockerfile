@@ -1,4 +1,4 @@
-FROM gliderlabs/logspout:v3.1
+FROM gliderlabs/logspout:latest
 
 RUN apk update
 RUN apk add tzdata
