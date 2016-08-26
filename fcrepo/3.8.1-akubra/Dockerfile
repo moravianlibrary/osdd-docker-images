@@ -15,12 +15,14 @@ WORKDIR $CATALINA_HOME
 RUN curl -sL "$JDBC_DRIVER_DOWNLOAD_URL" -o lib/postgresql-9.3-1103.jdbc4.jar
 
 ENV FEDORA_HOME /usr/local/fedora
-
+ENV FEDORA_WEBAPP_HOME /usr/local/tomcat/webapps/fedora
 ## install fedora
 ADD fedora-install.properties /tmp/fedora-install.properties
 RUN  curl -sL  "$FCREPO_DOWNLOAD_URL" -o fedora-install.jar && \
      java -jar fedora-install.jar /tmp/fedora-install.properties
 
+RUN unzip $CATALINA_HOME/webapps/fedora.war -d $CATALINA_HOME/webapps/fedora && \
+    rm $CATALINA_HOME/webapps/fedora.war
 
 RUN xmlstarlet ed -L -N x="http://www.fedora.info/definitions/1/0/config/" \
   -s "//x:module[@role='org.fcrepo.server.resourceIndex.ResourceIndex']" -t elem -n "paramKrameriusTMP" -v "" \
