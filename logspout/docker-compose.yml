@@ -1,7 +1,9 @@
 logspout:
-  image: moravianlibrary/logspout:latest
+  image: gliderlabs/logspout:latest
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro
   command: syslog://<logstash-url>:5000
   restart: always
 
