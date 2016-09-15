@@ -48,9 +48,11 @@ kibana:
     always
 
 logspout:
-  image: moravianlibrary/logspout:latest
+  image:  gliderlabs/logspout:latest
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro
   links:
     - logstash:logstash
   command: syslog://logstash:5000
