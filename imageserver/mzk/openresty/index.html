@@ -1,0 +1,16 @@
+<html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+	<head>
+		<script src="/reader/openseadragon.min.js"></script>
+	</head>
+	<body>
+	<div id="openseadragon"/>
+		<script type="text/javascript">
+			var url = (document.URL.toString().indexOf(".jp2") > -1) ? document.URL.toString().replace(".jp2", "/info.json") : document.URL.toString().concat("/info.json");
+			var viewer = OpenSeadragon({
+				id: "openseadragon",
+				prefixUrl: "/reader/images/",
+				tileSources: url
+			});
+		</script>
+	</body>
+</html>

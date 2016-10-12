@@ -1,5 +1,5 @@
 nginx:
-  build: ./nginx
+  build: ./openresty
   volumes:
     - /data/imageserver:/var/www/imageserver/data
   links:
