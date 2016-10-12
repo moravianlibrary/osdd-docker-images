@@ -29,5 +29,7 @@ COPY robots.txt /var/www/imageserver/robots.txt
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log && \
     ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
+    
+EXPOSE 80 443
 
 CMD ["/usr/local/openresty/nginx/sbin/nginx", "-g", "daemon off;"]
