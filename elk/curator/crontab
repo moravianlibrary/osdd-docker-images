@@ -1,2 +1,2 @@
-@daily root /usr/local/bin/curator --host elasticsearch delete indices --older-than 60 --time-unit days --timestring '\%Y.\%m.\%d' --prefix logstash >> /var/log/curator_cron.log 2>&1
+@daily root /usr/local/bin/curator /root/.curator/curator_action.yml
 # An empty line is required at the end of this file for a valid cron file.
