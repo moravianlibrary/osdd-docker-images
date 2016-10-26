@@ -48,7 +48,7 @@ kibana:
     always
 
 logspout:
-  image:  gliderlabs/logspout:latest
+  image:  gliderlabs/logspout:v3
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
     - /etc/localtime:/etc/localtime:ro
@@ -66,6 +66,8 @@ curator:
   image: moravianlibrary/curator:latest
   volumes:
     - ./curator/crontab:/etc/cron.d/curator
+    - ./curator/curator.yml:/root/.curator/curator.yml
+    - ./curator/curator_action.yml:/root/.curator/curator_action.yml
   environment:
     - "TZ=Europe/Prague"
   links:

@@ -1,2 +1,4 @@
 @daily root /usr/local/bin/curator /root/.curator/curator_action.yml
+* * * * * root /usr/local/bin/curator /root/.curator/curator_action.yml
 # An empty line is required at the end of this file for a valid cron file.
+# The owner must be root and permisions set to 0644 !!!
