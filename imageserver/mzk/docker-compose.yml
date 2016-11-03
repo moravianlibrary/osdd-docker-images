@@ -4,6 +4,8 @@ nginx:
     - /data/imageserver:/var/www/imageserver/data
   links:
     - imageserver:imageserver
+  external_links:
+    - "krameriusmzkcz_kramerius_1:kramerius.mzk.cz"
   environment:
     - "TZ=Europe/Prague"
   ports:

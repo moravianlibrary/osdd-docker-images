@@ -5,7 +5,7 @@ MAINTAINER Daniel Secik <daniel.secik@mzk.cz>
 ENV OPENRESTY_DOWNLOAD_URL https://openresty.org/download/openresty-1.11.2.1.tar.gz
 ENV OPENSEADRAGON_DOWNLOAD_URL https://github.com/openseadragon/openseadragon/releases/download/v2.2.1/openseadragon-bin-2.2.1.tar.gz
 
-RUN yum install -y readline-devel pcre-devel openssl-devel gcc wget nano && yum clean all -y
+RUN yum install -y readline-devel pcre-devel openssl-devel gcc wget nano dnsmasq && yum clean all -y
 
 RUN mkdir /openresty && \
     curl $OPENRESTY_DOWNLOAD_URL | tar -xz -C /openresty --strip-components=1
@@ -25,6 +25,7 @@ COPY index.html /var/www/imageserver/reader/reader.html
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 COPY favicon.ico /var/www/imageserver/favicon.ico
 COPY robots.txt /var/www/imageserver/robots.txt
+COPY dnsmasq.conf /etc/dnsmasq.conf
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log && \
@@ -32,4 +33,4 @@ RUN ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log && \
     
 EXPOSE 80 443
 
-CMD ["/usr/local/openresty/nginx/sbin/nginx", "-g", "daemon off;"]
+CMD /usr/sbin/dnsmasq; /usr/local/openresty/nginx/sbin/nginx -g 'daemon off;'
