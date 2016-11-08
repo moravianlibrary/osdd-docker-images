@@ -17,7 +17,7 @@ memcached:
     always
 
 imageserver:
-  build: ./imageserver
+  build: ../mzk/imageserver
   volumes:
     - /data/imageserver:/data
   links:
