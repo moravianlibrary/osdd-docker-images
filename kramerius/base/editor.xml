@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context>
-  <Realm className="org.apache.catalina.realm.JAASRealm" appName="editor" roleClassNames="cz.incad.kramerius.security.jaas.K4RolePrincipal" debug="99"/>
-  <Resource name="jdbc/kramerius4" auth="Container" type="javax.sql.DataSource" initialSize="3" maxActive="100" maxIdle="30" maxWait="10000" username="fedoraAdmin" password="fedoraAdmin" driverClassName="org.postgresql.Driver" url="jdbc:postgresql://krameriusPostgres/kramerius"/>
-</Context>

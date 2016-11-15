@@ -19,12 +19,6 @@ Pro provoz Krameria je nutné pustit více kontejnerů:
 
 Tyto kontejnery je nutné za pomocí nástroje docker-compose spojit.
 
-vytvoříme soubor [docker-compose.yml](https://github.com/moravianlibrary/kramerius-docker/blob/master/docker-compose.yml)
-
-Komponenty `fcrepo` a `solr` potřebují k běhu (alespoň minimální) data. Složky s daty se připojují v `docker-compose.yml` pod klíčem `volumes`.
-
-*v případě, že chcete v Dockeru provozovat pouze imageserver použijte  [docker-compose.yml](https://github.com/moravianlibrary/kramerius-docker/blob/master/imageserver/docker-compose.yml)*
-
-poté příkazem `docker-compose up -d`  pustíme.
+Nově se používá pro Kramerius s2i-builder na [moravianlibrary/s2i-kramerius](https://github.com/moravianlibrary/s2i-kramerius)
 
 Konfigurace je popsaná [zde](https://github.com/moravianlibrary/kramerius-docker/wiki/Konfigurace-Krameria)
