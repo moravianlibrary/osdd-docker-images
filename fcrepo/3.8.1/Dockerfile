@@ -1,4 +1,4 @@
-FROM tomcat:8.5.4-jre8
+FROM tomcat:8.5.8-jre8
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
