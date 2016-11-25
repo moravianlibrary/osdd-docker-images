@@ -57,6 +57,7 @@ USER $TOMCAT_USER
 EXPOSE 8080
 ADD docker-entrypoint.sh /
 ADD context.xml $CATALINA_HOME/conf/context.xml
+ADD server.xml $CATALINA_HOME/conf/server.xml
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
 
