@@ -1,7 +1,8 @@
 nginx:
-  build: ./nginx
+  #build: ./nginx
+  image: moravianlibrary/iipsrv-nginx:latest
   links:
-    - imageserver:imageserver
+    - iipimage:iipimage
   environment:
     - "TZ=Europe/Prague"
   ports:
@@ -16,8 +17,9 @@ memcached:
   restart:
     always
 
-imageserver:
-  build: ../mzk/imageserver
+iipimage:
+  #build: ../mzk/imageserver
+  image: moravianlibrary/iipsrv-imageserver:latest
   volumes:
     - /data/imageserver:/data
   links:
