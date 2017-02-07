@@ -1,0 +1,10 @@
+#!/bin/bash
+
+LOCAL_SOURCE_DIR=/tmp/src
+pushd $LOCAL_SOURCE_DIR
+git clone https://github.com/uclouvain/openjpeg.git
+pushd openjpeg
+cmake .
+make install
+popd
+./autogen.sh && ./configure --with-openjpeg=/tmp/src/openjpeg && make

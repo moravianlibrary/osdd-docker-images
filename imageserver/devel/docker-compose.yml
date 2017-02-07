@@ -1,0 +1,13 @@
+version: "2"
+services:
+  iipimage:
+    image: iipsrv-devel
+    environment:
+      - VERBOSITY=10
+    volumes:
+      - ./data:/data:ro
+  nginx:
+    build: ../default/nginx
+    image: moravianlibrary/iipsrv-nginx:latest
+    ports:
+      - "80:80"

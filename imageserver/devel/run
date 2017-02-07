@@ -1,0 +1,4 @@
+#!/bin/bash
+
+spawn-fcgi -f  /tmp/src/src/iipsrv.fcgi  -p $PORT -F $CHILDREN
+exec cat /tmp/iipsrv.log
