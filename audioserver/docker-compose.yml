@@ -1,7 +1,8 @@
 audioserver:
-  build: .
+  image: nginx:latest
   volumes:
-    - /data/audioserver:/data
+    - /data/audioserver:/data:ro
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
   environment:
     - "TZ=Europe/Prague"
   ports:
