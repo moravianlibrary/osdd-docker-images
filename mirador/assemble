@@ -3,7 +3,6 @@
 LOCAL_SOURCE_DIR=/tmp/src
 pushd $LOCAL_SOURCE_DIR
 
-npm install -g grunt
 npm install
 grunt build
 mv /tmp/src/build/ /usr/share/nginx/html/

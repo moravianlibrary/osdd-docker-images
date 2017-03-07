@@ -14,6 +14,16 @@ RUN INSTALL_PKGS="nodejs tar bzip2 python gcc-c++ gyp cairo-devel python nginx g
 
 ADD index.html /usr/share/nginx/html/index.html
 
+RUN npm install -g grunt
+ENV HOME=/opt/app-root/src
+RUN mkdir -p $HOME
+
+RUN chown -R 1001:0 $HOME /usr/share/nginx/html/  /var/log/nginx/ /var/lib/nginx
+RUN chmod -R go=u+rw $HOME /usr/share/nginx/html/ /var/log/nginx/ /var/lib/nginx
+
+USER 1001
+EXPOSE 80
+
 COPY  ["run", "assemble", "/usr/libexec/s2i/"]
 
 
