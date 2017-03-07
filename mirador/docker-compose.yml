@@ -1,0 +1,6 @@
+version: "2"
+services:
+  mirador:
+    image : mirador
+    ports:
+      - "80:80"

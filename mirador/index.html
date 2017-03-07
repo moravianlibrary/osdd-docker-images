@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Simple Viewer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      #viewer {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="build/mirador/css/mirador-combined.css">
+    <script src="build/mirador/mirador.min.js"></script>
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script type="text/javascript">
+      $(function() {
+        Mirador({
+          id: "viewer",
+          data: [ { "manifestUri": "http://kramerius.mzk.cz/search/api/v5.0/iiif/uuid:530719f5-ee95-4449-8ce7-12b0f4cadb22/manifest", "location": "Moravian Library"} ]
+        });
+      });
+    </script>
+  </body>
+</html>
