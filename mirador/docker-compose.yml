@@ -2,6 +2,5 @@ version: "2"
 services:
   mirador:
     image : mirador
-    user: "0:0"
     ports:
-      - "80:80"
+      - "8080:8080"
