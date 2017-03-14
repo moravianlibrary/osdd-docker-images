@@ -1,43 +1,61 @@
-nginx:
-  build: ./openresty
-  volumes:
-    - /data/imageserver:/var/www/imageserver/data
-  links:
-    - imageserver:imageserver
-  external_links:
-    - "krameriusmzkcz_kramerius_1:kramerius.mzk.cz"
-  environment:
-    - "TZ=Europe/Prague"
-    - VIRTUAL_HOST=imageserver.mzk.cz
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+version: "2"
+services:
+  nginx:
+#    image: moravianlibrary/iipsrv-nginx:mzk
+#    image: moravianlibrary/iipsrv-nginx:mzk-openresty
+    build: ./openresty
+    volumes:
+      - /data/imageserver:/var/www/imageserver/data
+#      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    environment:
+      - "TZ=Europe/Prague"
+      - VIRTUAL_HOST=imageserver.mzk.cz
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-memcached:
-  image: memcached:latest
-  environment:
-    - "TZ=Europe/Prague"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+  memcached:
+    image: memcached:latest
+    command: memcached -m 512 -v
+    environment:
+      - "TZ=Europe/Prague"
+    networks:
+      default:
+        aliases:
+          - memcached.imageserver.mzk.cz
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-imageserver:
-  build: ./imageserver
-  volumes:
-    - /data/imageserver:/data
-  environment:
-    - "TZ=Europe/Prague"
-  links:
-    - memcached:memcached
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+  imageserver:
+#    image: moravianlibrary/iipsrv-imageserver
+    build: ./imageserver
+    volumes:
+      - /data/imageserver:/data
+    networks:
+      default:
+        aliases:
+          - iipimage.imageserver.mzk.cz
+    environment:
+      - "TZ=Europe/Prague"
+      - "MEMCACHED_SERVERS=memcached.imageserver.mzk.cz"
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
+
+networks:
+  default:
+    external:
+      name: ud_bridge
