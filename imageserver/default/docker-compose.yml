@@ -1,30 +1,29 @@
-nginx:
-  #build: ./nginx
-  image: moravianlibrary/iipsrv-nginx:latest
-  links:
-    - iipimage:iipimage
-  environment:
-    - "TZ=Europe/Prague"
-  ports:
-    - "80:80"
-  restart:
-    always
-
-memcached:
-  image: memcached:latest
-  environment:
-    - "TZ=Europe/Prague"
-  restart:
-    always
-
-iipimage:
-  #build: ../mzk/imageserver
-  image: moravianlibrary/iipsrv-imageserver:latest
-  volumes:
-    - /data/imageserver:/data
-  links:
-    - memcached:memcached
-  environment:
-    - "TZ=Europe/Prague"
-  restart:
-    always
+version: "2"
+services:
+  nginx:
+    #build: ./nginx
+    image: moravianlibrary/iipsrv-nginx:latest
+    environment:
+      - "TZ=Europe/Prague"
+    ports:
+      - "80:80"
+    restart:
+      always
+  
+  memcached:
+    image: memcached:latest
+    command: memcached
+    environment:
+      - "TZ=Europe/Prague"
+    restart:
+      always
+  
+  iipimage:
+    #build: ../mzk/imageserver
+    image: moravianlibrary/iipsrv-imageserver:latest
+    volumes:
+      - /data/imageserver:/data:ro
+    environment:
+      - "TZ=Europe/Prague"
+    restart:
+      always
