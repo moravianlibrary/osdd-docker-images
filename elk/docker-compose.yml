@@ -1,81 +1,106 @@
-elasticsearch:
-  image: elasticsearch:latest
-  volumes:
-    - <data-location>:/usr/share/elasticsearch/data
-  command: elasticsearch -Des.network.host=0.0.0.0
-  environment:
-    - "TZ=Europe/Prague"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+version: "2"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
+#    image: elasticsearch:2.4.4
+    volumes:
+      - /mnt/elk/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      - "TZ=Europe/Prague"
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-logstash:
-  image: logstash:latest
-  volumes:
-    - ./logstash-config:/config-dir
-  command: logstash -f /config-dir/logstash.conf
-  ports:
-    - "5000:5000"
-    - "5000:5000/udp"
-  links:
-    - elasticsearch:elasticsearch
-  environment:
-    - "LOGSPOUT=ignore"
-    - "TZ=Europe/Prague"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.4.0
+#    image: logstash:2.4.1
+    volumes:
+      - ./logstash-config:/config-dir
+    command: logstash -f /config-dir/logstash.conf
+    ports:
+      - "5000:5000"
+      - "5000:5000/udp"
+    environment:
+      - "LOGSPOUT=ignore"
+      - "TZ=Europe/Prague"
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-kibana:
-  image: kibana:latest
-  links:
-    - elasticsearch:elasticsearch
-  ports:
-    - "5601:5601"
-  environment:
-    - "TZ=Europe/Prague"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.4.0
+#    image: kibana:4.6.4
+    ports:
+      - "5601:5601"
+    environment:
+      - "VIRTUAL_HOST=dk-kibana.infra.mzk.cz"
+      - "TZ=Europe/Prague"
+      - "LOGGING_QUIET=true"
+      - XPACK_SECURITY_ENABLED=false
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-logspout:
-  image:  gliderlabs/logspout:v3
-  volumes:
-    - /var/run/docker.sock:/tmp/docker.sock
-    - /etc/localtime:/etc/localtime:ro
-    - /etc/timezone:/etc/timezone:ro
-  links:
-    - logstash:logstash
-  command: syslog://logstash:5000
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart: always
+  logspout:
+    image: gliderlabs/logspout:v3.2.1
+    #image: gliderlabs/logspout:master
+    #image: bekt/logspout-logstash:latest
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+       - INACTIVITY_TIMEOUT=1m
+       - "ROUTE_URIS=syslog+tcp://logstash:5000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
 
-curator:
-  image: moravianlibrary/curator:latest
-  volumes:
-    - ./curator/crontab:/etc/cron.d/curator
-    - ./curator/curator.yml:/root/.curator/curator.yml
-    - ./curator/curator_action.yml:/root/.curator/curator_action.yml
-  environment:
-    - "TZ=Europe/Prague"
-  links:
-    - elasticsearch:elasticsearch
-  command: bash -c "cron && touch /var/log/curator_cron.log && tail -f /var/log/curator_cron.log"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+  curator:
+    image: moravianlibrary/curator:latest
+    volumes:
+      - ./curator/crontab:/etc/cron.d/curator
+      - ./curator/curator.yml:/root/.curator/curator.yml
+      - ./curator/curator_action.yml:/root/.curator/curator_action.yml
+    environment:
+      - "TZ=Europe/Prague"
+    command: bash -c "cron && touch /var/log/curator_cron.log && tail -f /var/log/curator_cron.log"
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
+
+networks:
+  default:
+    external:
+      name: ud_bridge

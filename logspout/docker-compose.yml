@@ -1,9 +1,22 @@
-logspout:
-  image: gliderlabs/logspout:latest
-  volumes:
-    - /var/run/docker.sock:/tmp/docker.sock
-    - /etc/localtime:/etc/localtime:ro
-    - /etc/timezone:/etc/timezone:ro
-  command: syslog://<logstash-url>:5000
-  restart: always
+version: "2"
+services:
+  logspout:
+    image: gliderlabs/logspout:latest
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - INACTIVITY_TIMEOUT=1m
+      - "ROUTE_URIS=syslog+tcp://dk-back.infra.mzk.cz:5000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart: always
 
+networks:
+  default:
+    external:
+      name: ud_bridge

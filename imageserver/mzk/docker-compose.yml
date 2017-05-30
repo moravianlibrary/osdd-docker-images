@@ -2,14 +2,18 @@ version: "2"
 services:
   nginx:
 #    image: moravianlibrary/iipsrv-nginx:mzk
-#    image: moravianlibrary/iipsrv-nginx:mzk-openresty
-    build: ./openresty
+    image: moravianlibrary/iipsrv-nginx:mzk-openresty
+#    build: ./openresty
+#    build: ./nginx
     volumes:
       - /data/imageserver:/var/www/imageserver/data
 #      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
     environment:
       - "TZ=Europe/Prague"
       - VIRTUAL_HOST=imageserver.mzk.cz
+      - LETSENCRYPT_HOST=imageserver.mzk.cz
+      - LETSENCRYPT_EMAIL=daniel.secik@mzk.cz
+      - HTTPS_METHOD=noredirect
     logging:
       driver: json-file
       options:
@@ -36,8 +40,8 @@ services:
       always
 
   imageserver:
-#    image: moravianlibrary/iipsrv-imageserver
-    build: ./imageserver
+    image: moravianlibrary/iipsrv-imageserver
+#    build: ./imageserver
     volumes:
       - /data/imageserver:/data
     networks:
@@ -47,6 +51,7 @@ services:
     environment:
       - "TZ=Europe/Prague"
       - "MEMCACHED_SERVERS=memcached.imageserver.mzk.cz"
+      - VERBOSITY=1
     logging:
       driver: json-file
       options:

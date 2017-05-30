@@ -1,15 +1,25 @@
-audioserver:
-  image: nginx:latest
-  volumes:
-    - /data/audioserver:/data:ro
-    - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-  environment:
-    - "TZ=Europe/Prague"
-  ports:
-    - "80:80"
-  log_driver: "json-file"
-  log_opt:
-    max-size: "100m"
-    max-file: "1"
-  restart:
-    always
+version: "2"
+services:
+  audioserver:
+    image: nginx:latest
+    volumes:
+      - /mnt/audioserver:/data:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - "TZ=Europe/Prague"
+      - VIRTUAL_HOST=audioserver.mzk.cz
+      - LETSENCRYPT_HOST=audioserver.mzk.cz
+      - LETSENCRYPT_EMAIL=daniel.secik@mzk.cz
+      - HTTPS_METHOD=noredirect
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "1"
+    restart:
+      always
+
+networks:
+  default:
+    external:
+      name: ud_bridge
