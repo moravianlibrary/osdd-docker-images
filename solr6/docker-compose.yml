@@ -3,3 +3,5 @@ services:
   solr:
     build: .
     image: moravianlibrary/solr6
+    ports:
+      - "8983:8983"
