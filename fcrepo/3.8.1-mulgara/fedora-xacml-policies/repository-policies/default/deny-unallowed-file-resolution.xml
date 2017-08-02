@@ -24,8 +24,7 @@
    The regular expression determines the locations and files allowed for retrieval; it must match the canonical file URI for a resource.
    Restricting access to administrators will allow datastreams in control group 'M' to be ingested from the file system.
    Restricting access by URI only will allow datastreams in control group 'E' to be located on the file system.
-  -->
-<!--    
+  -->    
   <Rule RuleId="1" Effect="Permit">
     <Condition FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
       <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
@@ -41,7 +40,6 @@
       </Apply>    
     </Condition>
   </Rule>
-  -->
-  <Rule RuleId="1" Effect="Deny">
-  </Rule>
+<!--  <Rule RuleId="2" Effect="Deny">
+</Rule> -->
 </Policy>

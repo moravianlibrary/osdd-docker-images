@@ -44,6 +44,7 @@ USER $TOMCAT_USER
 EXPOSE 8080
 ADD docker-entrypoint.sh /
 ADD context.xml $CATALINA_HOME/conf/context.xml
+ADD objects-jaxrs.xml $FEDORA_HOME/server/config/spring/web/jaxrs/objects-jaxrs.xml
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
 
