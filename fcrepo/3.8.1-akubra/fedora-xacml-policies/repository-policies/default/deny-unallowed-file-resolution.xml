@@ -42,6 +42,6 @@
     </Condition>
   </Rule>
   -->
-  <Rule RuleId="1" Effect="Deny">
-  </Rule>
+  <!-- <Rule RuleId="1" Effect="Deny"> -->
+  <!-- </Rule> -->
 </Policy>
