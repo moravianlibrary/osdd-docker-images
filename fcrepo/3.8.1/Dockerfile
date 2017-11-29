@@ -58,6 +58,7 @@ EXPOSE 8080
 ADD docker-entrypoint.sh /
 ADD context.xml $CATALINA_HOME/conf/context.xml
 ADD server.xml $CATALINA_HOME/conf/server.xml
+ADD objects-jaxrs.xml $FEDORA_HOME/server/config/spring/web/jaxrs/objects-jaxrs.xml
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
 
