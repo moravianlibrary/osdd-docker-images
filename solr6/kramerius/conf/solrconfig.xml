@@ -1431,6 +1431,114 @@
     <int name="xsltCacheLifetimeSeconds">5</int>
   </queryResponseWriter>
 
+
+  <!-- oai4solr config -->
+  <requestHandler name="/oai" default="false" class="org.socialhistoryservices.api.oai.OAIRequestHandler">
+
+    <!-- WT is the key for the queryResponseWriter (see below) -->
+    <str name="wt">oai</str>
+
+    <!-- the oai_home is a path relative to the solr.home directory.
+    The default is [solr_home]/oai
+    In this folder the xsl stylesheets, ListMetadataPrefix.xml, Identify.xml and ListSets.xsl must be placed.
+    -->
+    <str name="oai_home">/oai</str>
+
+    <!-- the base url...  -->
+    <str name="proxyurl">http://localhost:8983/solr/kramerius/oai</str>
+
+    <!-- index of the oai identifier user for the -identifier parameter
+     For example, if your Solr identifier index is "identifier", you set it
+     to... ques what...
+     -->
+    <str name="field_index_identifier">PID</str>
+
+    <!-- The prefix will be stripped from the oai identifier value, before it is passed
+    to the Solr Lucene query. For example, if your index contains a
+     Solr identifiers such as the format:
+     id12345
+    then an OAI request like GetRecord&identifier=oai:mydomain:id12345
+     is rewritten as id12345 and passed on to the Solr query.
+    -->
+    <str name="prefix">oai:kramerius.mzk.cz:</str>
+
+    <!-- the field that can be used for the -from and -until  values -->
+    <str name="field_index_datestamp">modified_date</str>
+
+    <!-- the field that can be used to sort datestamps. It is relevant
+    to have a sortable field for your datestamp when having paged OAI2
+    results. -->
+    <str name="field_sort_datestamp">modified_date</str>
+
+    <!-- index for the -set value -->
+    <str name="field_index_set">fedora.model:"%s"</str>
+
+    <!-- Some documents may be large or small, depending on the schema.
+    In that case, we set the step of the paging to a lower count. -->
+    <lst name="maxrecords">
+      <int name="default">20</int>
+      <int name="ead">1</int>
+      <int name="eci">1</int>
+    </lst>
+
+    <!-- The resumption token is build up from string parameters (from,until,set and metadataprefix). The separator
+    character is a regular expression that is used to divide them up.
+    You don't need to change this.
+    -->
+    <int name="resumptionTokenExpirationInSeconds">86400</int>
+    <str name="resumptionTokenSeparator">,</str>
+
+    <!--
+    The static_query argument is an optional extra Lucene query and if set, appended as an AND query to the internal
+    OAI2 query string. Use this query when you do not want to expose the entire Solr index, but a specific subset.
+     For example:
+     <str name="static_query">(visible:true AND status:available) OR showall:true</str>
+    will be appended by the OAI2 handler so:
+    [the OAI2 query here] AND ( (visible:true AND status:available) OR showall:true )
+     -->
+    <!--
+        <str name="static_query"/>
+    -->
+
+    <str name="static_query">
+      fedora.model:monograph OR fedora.model:periodical OR fedora.model:periodicalitem OR fedora.model:periodicalvolume OR fedora.model:manuscript
+      OR fedora.model:graphic OR fedora.model:map OR fedora.model:sheetmusic OR fedora.model:article OR fedora.model:supplement
+    </str>
+
+    <!--
+    The enable_filter_query is set to true or false ( false is the default ).
+    Use this when the OAI2 handler is invoked via a parent handler or proxy which attaches extra query conditions dynamically.
+    This can be use full when the client is not allowed to see certain records based on access policies. The latter
+    you can translate into a filter query.
+    Filter query arguments must be appended to the oai handler with a -fq key.
+    For example, you may have an internal service that captures the client request and the identity of the client.
+    You can then call the service internally like so:
+    String OAI2_ARGUMENTS = capture_oai_arguments(client_request);
+    String QUERY_FILTER_ARGUMENTS = get_query_arguments_from_user_authorities(client_authorities);
+    SolrServer solrServer = new HttpSolrServer("http://localhost/solr/collection1/oai?" + OAI2_ARGUMENTS + "&qf=QUERY_FILTER_ARGUMENTS);
+    Note: if you want to use the -fq parameter for this purpose make sure you do not allow the client to inject
+    the -fq parameter. The enable_filter_query value is false when not set.
+    -->
+    <!--
+        <bool name="enable_filter_query">false</bool>
+    -->
+
+    <!-- The xslt_parameters is a list of key-value pairs that will be passed on to the XSLT.
+    -->
+
+    <lst name="xslt_parameters">
+      <str name="kramerius_url">http://kramerius:8080/search/</str>
+      <str name="api_point">api/v5.0/</str>
+    </lst>
+
+
+
+
+  </requestHandler>
+  <!-- Custom wt that is being used by the OAI handler -->
+  <queryResponseWriter name="oai" default="false" class="org.socialhistoryservices.api.oai.OAIQueryResponseWriter"/>
+
+
   <!-- Query Parsers
 
        https://cwiki.apache.org/confluence/display/solr/Query+Syntax+and+Parsing
