@@ -1,5 +1,8 @@
 FROM debian:stretch
-MAINTAINER Daniel Secik <daniel.secik@mzk.cz>
+LABEL maintainer="daniel.secik@mzk.cz"
+
+RUN groupadd -g 999 iipimage && \
+    useradd -r -u 999 -g iipimage iipimage
 
 RUN apt-get update && \
     apt-get install -y libjpeg-turbo-progs \
@@ -24,8 +27,10 @@ ENV MAX_CVT=30000
 ENV MAX_LAYERS=10
 ENV MEMCACHED_SERVERS=memcached
 
-RUN mkfifo /tmp/iipsrv.log
-
 COPY init.sh /init.sh
+RUN chmod +x /init.sh
+
+USER iipimage
+RUN mkfifo /tmp/iipsrv.log
 
 CMD /init.sh
