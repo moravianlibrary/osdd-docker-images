@@ -1,0 +1,202 @@
+diff -urN configure.ac configure.ac
+--- configure.ac	2011-07-01 13:58:17.000000000 +0200
++++ configure.ac	2011-07-01 13:58:41.000000000 +0200
+@@ -227,8 +227,10 @@
+
+ 		AC_CHECK_LIB(c,get_nprocs_conf,AC_DEFINE(NPROCS))
+ 	fi
++	echo $kakadu_path > debian/.kakadu_path
+ else
+ 	AM_CONDITIONAL([ENABLE_KAKADU],[false])
++	rm -f debian/.kakadu_path
+ fi
+
+
+
+diff -urN debian/DEBIAN/control debian/DEBIAN/control
+--- debian/DEBIAN/control	1970-01-01 01:00:00.000000000 +0100
++++ debian/DEBIAN/control	2011-07-01 13:58:32.000000000 +0200
+@@ -0,0 +1,15 @@
++Package: iipimage
++Version: 1.1
++Section: non-free/web
++Priority: optional
++Architecture: $ARCH
++Depends: libjpeg-turbo-progs, libtiff5, libmemcached11, libstdc++6, libc6, libgomp1
++Maintainer: Daniel Sečík <daniel.secik@mzk.cz>
++Description: IIPServer with JPEG2000 support
++ IIPImage is a client-server system. The server is a Fast CGI
++ module written in C++ that runs within a host web server such
++ as Apache, Lighttpd or MyServer. The client application connects
++ to the server and receives back image metadata, image tiles or
++ dynamically generated complete JPEG images at the desired resolution
++ and JPEG quality factor. The client can communicate with the server
++ using the IIP, IIIF, Zoomify or DeepZoom protocol. 
+diff -urN debian/makedeb debian/makedeb
+--- debian/makedeb	1970-01-01 01:00:00.000000000 +0100
++++ debian/makedeb	2011-07-01 13:58:32.000000000 +0200
+@@ -0,0 +1,59 @@
++#!/bin/sh
++
++if [ ! -f configure.ac ];
++then
++    echo "This script must be invoked from the iipsrv root directory."
++    exit 1
++fi
++
++SANDBOX=`mktemp -d`
++
++# create library dirs
++mkdir -p "$SANDBOX"/usr/lib/cgi-bin
++mkdir -p "$SANDBOX"/usr/share
++
++# copy kakadu
++if [ -f debian/.kakadu_path ]; then
++	KDUPATH=`cat debian/.kakadu_path`
++
++	LIBNAME=`basename "$KDUPATH"/apps/make/libkdu_v*R.so`
++
++	cp "$KDUPATH"/apps/make/$LIBNAME "$SANDBOX"/usr/lib
++	strip "$SANDBOX"/usr/lib/$LIBNAME
++	ln -s $LIBNAME "$SANDBOX"/usr/lib/libkakadu.so
++
++	DEBNAME=iipimage-jp2
++	MANFILE=man/iipsrv.8
++else
++	# copy only copyright notice
++	cp -R debian/share/doc "$SANDBOX"/usr/share
++
++	DEBNAME=iipimage
++	MANFILE=man/iipsrv.8
++fi
++
++# copy iipsrv
++cp src/iipsrv.fcgi "$SANDBOX"/usr/lib/cgi-bin
++strip "$SANDBOX"/usr/lib/cgi-bin/iipsrv.fcgi
++
++# copy man page
++mkdir -p "$SANDBOX"/usr/share/man/man8
++gzip -9 -c "$MANFILE" > "$SANDBOX"/usr/share/man/man8/iipsrv.8.gz
++
++# create debian metadata
++cp -R debian/DEBIAN "$SANDBOX"
++
++# get host architecture string
++ARCH=`dpkg-architecture -qDEB_HOST_ARCH`
++
++# set architecture string in debian/control
++sed -i -e "s/\\\$ARCH/$ARCH/g" "$SANDBOX/DEBIAN/control"
++
++# build package
++fakeroot dpkg-deb --build "$SANDBOX"
++
++# copy it
++mv "$SANDBOX.deb" $DEBNAME-$ARCH.deb
++
++# clean up
++rm -rf "$SANDBOX"
+diff -urN debian/README debian/README
+--- debian/README	1970-01-01 01:00:00.000000000 +0100
++++ debian/README	2011-07-01 13:58:32.000000000 +0200
+@@ -0,0 +1,62 @@
++
++iipsrv debian package
++=====================
++
++
++prerequisites
++-------------
++
++g++, libfcgi-dev, libjpeg62-dev, libtiff5-dev, zlib1g-dev,
++libstdc++6, libc6-dev
++
++
++kakadu
++------
++
++If you want iipsrv with JPEG2000 support, you must
++have kakadu library compiled from source. By default,
++kakadu is compiled with MMX and SSE optimizations.
++This might not be portable. Consider making several
++packages with different builds of kakadu.
++See files apps/make/* coresys/make/* and managed/make/*
++in kakadu source distribution.
++
++
++building
++--------
++
++# go to iipsrv root directory
++$ cd /.../.../iipsrv-0.9.9
++
++# configure iipsrv with or without kakadu support
++$ ./configure --with-kakadu=/full/path/to/kakadu/source/directory
++OR
++$ ./configure
++
++# always clean old object files
++make clean
++
++# build it
++make
++
++# create .deb
++debian/makedeb
++
++# now you can try again with different configure
++# but don't forget to make clean
++
++
++installation
++-------------
++
++*NEVER* mix the two versions (iipsrv.deb, iipsrv-jp2.deb)!
++If you installed one of them and want to install the other,
++you *MUST* purge the old one. Otherwise strange things happen.
++
++$ sudo dpkg -i iipsrv.deb
++
++# time passes
++# ...
++
++$ sudo apt-get purge iipsrv
++$ sudo dpkg -i iipsrv-jp2.deb
+diff -urN debian/share/doc/iipimage/copyright debian/share/doc/iipimage/copyright
+--- debian/share/doc/iipimage/copyright	1970-01-01 01:00:00.000000000 +0100
++++ debian/share/doc/iipimage/copyright	2011-07-01 13:58:32.000000000 +0200
+@@ -0,0 +1,35 @@
++This package consists of two parts: IIPImage server and
++Kakadu software JPEG2000 library. This package
++is not part of Debian GNU/Linux because the Kakadu library is not freeware
++and can be distributed only in binary form and for non-comercial uses only.
++
++
++IIPImage:
++
++    Upstream author: Ruven Pillay <ruven@users.sourceforge.net>
++
++	This software is copyright © 2000-2015 Ruven Pillay.
++
++	The source for the server and all clients is licensed under
++	version 3 of the GNU General Public License. See the 
++	copyright notice in /usr/share/common-licenses/GPL for licensing
++	details or go to http://www.gnu.org for more details.
++
++	If you use IIPImage on a public site and remove the IIP link
++	logo from the client, you must provide a link on your site back
++	to the IIPImage site – http://iipimage.sf.net
++
++
++Kakadu software JPEG2000:
++
++    Author: Dr. David S Taubman <d.taubman@unsw.edu.au>
++
++	This software is copyright (c) by NewSouth Innovations Pty Limited 
++
++	The library can be downloaded at http://www.kakadusoftware.com/Downloads
++	This page notes the following license:
++
++Copyright is owned by NewSouth Innovations Pty Limited, commercial arm of the UNSW Australia in Sydney.
++You are free to trial these executables and even to re-distribute them, so long as such use or re-distribution
++is accompanied with this copyright notice and is not for commercial gain. Note: Binaries can only be used
++for non-commercial purposes. If in doubt please contact the Kakadu Team at info@kakadusoftware.com.
