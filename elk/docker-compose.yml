@@ -1,13 +1,17 @@
 version: "2"
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
 #    image: elasticsearch:2.4.4
     volumes:
       - /mnt/elk/elasticsearch:/usr/share/elasticsearch/data
     environment:
       - "TZ=Europe/Prague"
       - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
     ulimits:
@@ -27,10 +31,17 @@ services:
       always
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:5.4.0
+    image: docker.elastic.co/logstash/logstash:6.2.2
 #    image: logstash:2.4.1
     volumes:
       - ./logstash-config:/config-dir
+    environment:
+      - "TZ=Europe/Prague"
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false  
+      - xpack.watcher.enabled=false
     command: logstash -f /config-dir/logstash.conf
     ports:
       - "5000:5000"
@@ -47,7 +58,7 @@ services:
       always
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:5.4.0
+    image: docker.elastic.co/kibana/kibana:6.2.2
 #    image: kibana:4.6.4
     ports:
       - "5601:5601"
@@ -56,6 +67,11 @@ services:
       - "TZ=Europe/Prague"
       - "LOGGING_QUIET=true"
       - XPACK_SECURITY_ENABLED=false
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
     logging:
       driver: json-file
       options:
@@ -65,7 +81,7 @@ services:
       always
 
   logspout:
-    image: gliderlabs/logspout:v3.2.1
+    image: gliderlabs/logspout:v3.2.4
     #image: gliderlabs/logspout:master
     #image: bekt/logspout-logstash:latest
     volumes:
@@ -83,18 +99,19 @@ services:
     restart:
       always
 
-  curator:
-    image: moravianlibrary/curator:latest
-    volumes:
-      - ./curator/crontab:/etc/cron.d/curator
-      - ./curator/curator.yml:/root/.curator/curator.yml
-      - ./curator/curator_action.yml:/root/.curator/curator_action.yml
-    environment:
-      - "TZ=Europe/Prague"
-    command: bash -c "cron && touch /var/log/curator_cron.log && tail -f /var/log/curator_cron.log"
-    logging:
-      driver: json-file
-      options:
+  curator: 
+    image: bobrik/curator:5.4.0 
+    volumes: 
+      - ./curator/crontab:/var/spool/cron/crontabs/root 
+      - ./curator/curator.yml:/root/.curator/curator.yml 
+      - ./curator/curator_action.yml:/root/.curator/curator_action.yml 
+      - /etc/localtime:/etc/localtime:ro
+    user: root 
+    entrypoint: ""
+    command: crond -l 0 -f
+    logging: 
+      driver: json-file 
+      options: 
         max-size: "100m"
         max-file: "1"
     restart:
@@ -104,3 +121,4 @@ networks:
   default:
     external:
       name: ud_bridge
+
