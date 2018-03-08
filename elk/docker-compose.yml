@@ -7,11 +7,11 @@ services:
       - /mnt/elk/elasticsearch:/usr/share/elasticsearch/data
     environment:
       - "TZ=Europe/Prague"
-      - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
-      - xpack.ml.enabled=false
-      - xpack.graph.enabled=false
-      - xpack.watcher.enabled=false
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_MONITORING_ENABLED=false
+      - XPACK_ML_ENABLED=false
+      - XPACK_GRAPH_ENABLED=false
+      - XPACK_WATCHER_ENABLED=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
     ulimits:
@@ -37,11 +37,11 @@ services:
       - ./logstash-config:/config-dir
     environment:
       - "TZ=Europe/Prague"
-      - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
-      - xpack.ml.enabled=false
-      - xpack.graph.enabled=false  
-      - xpack.watcher.enabled=false
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_MONITORING_ENABLED=false
+      - XPACK_ML_ENABLED=false
+      - XPACK_GRAPH_ENABLED=false
+      - XPACK_WATCHER_ENABLED=false  
     command: logstash -f /config-dir/logstash.conf
     ports:
       - "5000:5000"
@@ -67,11 +67,11 @@ services:
       - "TZ=Europe/Prague"
       - "LOGGING_QUIET=true"
       - XPACK_SECURITY_ENABLED=false
-      - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
-      - xpack.ml.enabled=false
-      - xpack.graph.enabled=false
-      - xpack.watcher.enabled=false
+# Kibana wont start with monitoring disabled
+#      - XPACK_MONITORING_ENABLED=false
+      - XPACK_ML_ENABLED=false
+      - XPACK_GRAPH_ENABLED=false
+      - XPACK_WATCHER_ENABLED=false
     logging:
       driver: json-file
       options:
