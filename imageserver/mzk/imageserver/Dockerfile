@@ -1,5 +1,5 @@
 FROM debian:stretch
-LABEL maintainer="daniel.secik@mzk.cz"
+LABEL maintainer="stepanovsky@mzk.cz"
 
 RUN groupadd -g 999 iipimage && \
     useradd -r -u 999 -g iipimage iipimage
