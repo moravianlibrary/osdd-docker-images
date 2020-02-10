@@ -2,6 +2,6 @@ version: "2"
 services:
   solr:
     build: .
-    image: moravianlibrary/solr6
+    image: moravianlibrary/solr:6.3.0
     ports:
       - "8983:8983"
