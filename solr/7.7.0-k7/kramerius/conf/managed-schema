@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <schema name="kramerius" version="1.4">
-
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>

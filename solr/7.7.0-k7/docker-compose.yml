@@ -1,0 +1,14 @@
+version: '3'
+services:
+  solr:
+    image: moravianlibrary/solr:7.7.0-processing-index
+    container_name: solr_container
+#    volumes:
+#      - ./test_volume:/opt/solr/server/solr/mycores
+#    environment:
+#      - "TZ=Europe/Prague"
+#      - "JAVA_OPTS=-Ddisable.configEdit=true"
+#      - "CATALINA_OPTS=-Ddisable.configEdit=true"
+    ports:
+      - 8983:8983
+    restart: always
