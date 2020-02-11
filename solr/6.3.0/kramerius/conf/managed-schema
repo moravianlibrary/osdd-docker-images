@@ -546,9 +546,6 @@
     <copyField source="browse_title" dest="search_title"/>
     <copyField source="dc.creator" dest="facet_autor"/>
     <copyField source="dc.creator" dest="search_autor"/>
- 
-
-
 
 </schema>
 

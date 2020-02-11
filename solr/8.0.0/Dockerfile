@@ -10,4 +10,4 @@ ADD oai/ /var/solr/data/oai
 RUN chown -R $SOLR_USER:$SOLR_USER /kramerius
 USER $SOLR_USER
 
-CMD docker-entrypoint.sh solr-precreate  kramerius /kramerius 
+CMD docker-entrypoint.sh solr-precreate  kramerius /kramerius
