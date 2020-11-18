@@ -9,7 +9,7 @@
 
     <Identify>
         <repositoryName>Moravská zemská knihovna</repositoryName>
-	    <baseURL>https://kramerius.mzk.cz</baseURL>
+	    <baseURL>https://kramerius.mzk.cz/oai/</baseURL>
         <protocolVersion>2.0</protocolVersion>
         <adminEmail>kramerius@mzk.cz</adminEmail>
         <earliestDatestamp>2011-06-01T12:00:00Z</earliestDatestamp>
