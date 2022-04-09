@@ -1,0 +1,31 @@
+version: '3'
+services:
+  solr-standalone:
+    image: moravianlibrary/solr:8.0.0-dnnt-multi
+    container_name: solr
+    environment:
+      - SOLR_TIMEZONE=Europe/Prague
+    ports:
+      - 8983:8983
+    restart: always
+
+  solr-master:
+    image: moravianlibrary/solr:8.0.0-dnnt-multi
+    container_name: solr-master
+    environment:
+      - SOLR_TIMEZONE=Europe/Prague
+      - ENABLE_MASTER=true
+    ports:
+      - 8984:8983
+    restart: always
+
+  solr-slave:
+    image: moravianlibrary/solr:8.0.0-dnnt-multi
+    container_name: solr-slave
+    environment:
+      - SOLR_TIMEZONE=Europe/Prague
+      - ENABLE_SLAVE=true
+      - MASTER_URL=http://solr-master:8983
+    ports:
+      - 8985:8983
+    restart: always
