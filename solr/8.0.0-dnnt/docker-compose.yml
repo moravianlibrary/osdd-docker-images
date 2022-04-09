@@ -4,9 +4,7 @@ services:
     image: moravianlibrary/solr:8.0.0-dnnt
     container_name: solr_kramerius
     environment:
-      - "TZ=Europe/Prague"
-      - "JAVA_OPTS=-Ddisable.configEdit=true"
-      - "CATALINA_OPTS=-Ddisable.configEdit=true"
+      - SOLR_TIMEZONE=Europe/Prague
     ports:
       - 8983:8983
     restart: always
