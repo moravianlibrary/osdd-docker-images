@@ -1,7 +1,7 @@
 version: "2"
 services:
   nginx:
-    #build: ./nginx
+    build: ./nginx
     image: moravianlibrary/iipsrv-nginx:latest
     environment:
       - "TZ=Europe/Prague"
